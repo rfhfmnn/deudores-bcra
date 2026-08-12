@@ -2,9 +2,9 @@ library(tidyverse)
 library(viewxl)
 library(arrow)
 
-dir<-"C:/Users/SYC/Downloads/deudores"
+#dir<-"C:/Users/SYC/Downloads/deudores"
 
-setwd(dir)
+#setwd(dir)
 actividades<-read_parquet("data/actividades_clean.parquet") |> 
   rename(actividad=codigo_actividad)
 entidades<-read_parquet("data/maeent_clean.parquet") |> 
@@ -40,7 +40,7 @@ deudores<-read_parquet("data/deuda.parquet") |>
     provincia==23~"Santa Cruz",
     provincia==24~"Tierra del Fuego"
   )) |> mutate(anio="2026",mes="6") |> 
-    mutate(situacion=ifelse(situacion %in% c("1","2"),"Situación normal o de bajo riesgo","En mora"))
+    mutate(situacion_mora=ifelse(situacion %in% c("1","2"),"Situación normal o de bajo riesgo","En mora"))
 
 write_parquet(deudores,'data/deuda_clean.parquet')
 
