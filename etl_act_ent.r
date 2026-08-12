@@ -2,6 +2,9 @@ library(tidyverse)
 library(data.table)
 library(arrow)
 
+dir<-"C:/Users/SYC/Downloads/deudores"
+setwd(dir)
+
 actividades <- read_fwf(
   file = "Actividades_ARCA.txt",
   col_positions = fwf_widths(
@@ -15,8 +18,6 @@ actividades <- read_fwf(
 actividades$actividad <- trimws(actividades$actividad)
 actividades$descripcion <- trimws(actividades$descripcion)
 
-actividades<- actividades |> 
-  mutate(actividad=as.numeric(actividad))
 
 entidades <- read_fwf(
   file = "Maeent.txt",
@@ -30,9 +31,6 @@ entidades <- read_fwf(
 
 entidades$entidad <- trimws(entidades$entidad)
 entidades$nombre_entidad <- trimws(entidades$nombre_entidad)
-
-entidades<- entidades |> 
-  mutate(entidad=as.numeric(entidad))
 
 write_parquet(actividades, "deudores-bcra/data/actividades.parquet")
 write_parquet(entidades, "deudores-bcra/data/entidades.parquet")

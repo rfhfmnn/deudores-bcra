@@ -2,15 +2,13 @@ library(tidyverse)
 library(viewxl)
 library(arrow)
 
-#dir<-"C:/Users/SYC/Downloads/deudores"
+dir<-"C:/Users/SYC/Downloads/deudores/deudores-bcra"
 
-#setwd(dir)
-actividades<-read_parquet("data/actividades_clean.parquet") |> 
-  rename(actividad=codigo_actividad)
-entidades<-read_parquet("data/maeent_clean.parquet") |> 
-  rename(entidad=codigo_entidad)
+setwd(dir)
+actividades<-read_parquet("data/actividades.parquet")
+entidades<-read_parquet("data/entidades.parquet")
 deudores<-read_parquet("data/deuda.parquet") |> 
-  mutate(entidad=as.numeric(entidad)) |> 
+  #mutate(entidad=as.numeric(entidad)) |> 
   left_join(entidades,by="entidad") |> 
   select(nombre_entidad,situacion,provincia,everything()) |> 
   select(-entidad) |> 
@@ -40,8 +38,11 @@ deudores<-read_parquet("data/deuda.parquet") |>
     provincia==23~"Santa Cruz",
     provincia==24~"Tierra del Fuego"
   )) |> mutate(anio="2026",mes="6") |> mutate(fecha = ymd(paste(anio, mes,"01", sep = "-"))) |> select(-anio,-mes) |> 
-    mutate(situacion_mora=ifelse(situacion %in% c("1","2"),"Situación normal o de bajo riesgo","En mora")) |> 
-  replace_na(list(sexo = "Empresa"))
+    mutate(situacion_mora=ifelse(situacion %in% c("1","2"),"Normal/Bajo riesgo","En mora")) |> 
+  replace_na(list(sexo = "Empresa")) |> 
+  left_join(actividades,by="actividad") |> 
+  replace_na(list(descripcion="Sin actividad")) |> 
+  select(-actividad)
 
 write_parquet(deudores,'data/deuda_clean.parquet')
 
