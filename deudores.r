@@ -39,8 +39,9 @@ deudores<-read_parquet("data/deuda.parquet") |>
     provincia==22~"Río Negro",
     provincia==23~"Santa Cruz",
     provincia==24~"Tierra del Fuego"
-  )) |> mutate(anio="2026",mes="6") |> 
-    mutate(situacion_mora=ifelse(situacion %in% c("1","2"),"Situación normal o de bajo riesgo","En mora"))
+  )) |> mutate(anio="2026",mes="6") |> mutate(fecha = ymd(paste(anio, mes,"01", sep = "-"))) |> select(-anio,-mes) |> 
+    mutate(situacion_mora=ifelse(situacion %in% c("1","2"),"Situación normal o de bajo riesgo","En mora")) |> 
+  replace_na(list(sexo = "Empresa"))
 
 write_parquet(deudores,'data/deuda_clean.parquet')
 
