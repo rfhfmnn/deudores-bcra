@@ -2,7 +2,7 @@ library(tidyverse)
 library(data.table)
 library(arrow)
 
-dir<-"C:/Users/SYC/Downloads/deudores"
+dir<-"C:/Users/rafah/Documents/Deudores BCRA"
 setwd(dir)
 
 actividades <- read_fwf(

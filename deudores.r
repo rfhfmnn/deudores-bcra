@@ -2,9 +2,9 @@ library(tidyverse)
 library(viewxl)
 library(arrow)
 
-dir<-"C:/Users/SYC/Downloads/deudores/deudores-bcra"
+#dir<-"C:/Users/rafah/Documents/Deudores BCRA/deudores-bcra"
 
-setwd(dir)
+#setwd(dir)
 actividades<-read_parquet("data/actividades.parquet")
 entidades<-read_parquet("data/entidades.parquet")
 deudores<-read_parquet("data/deuda.parquet") |> 
