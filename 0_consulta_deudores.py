@@ -146,3 +146,69 @@ con.sql("""
                 actividad
         ) TO 'data/deuda_new.parquet' (FORMAT PARQUET)
     """)
+
+con.sql("""
+    COPY (
+        WITH base AS (
+            SELECT 
+                d.periodo,
+                d.entidad,
+                d.situacion,
+                p.provincia,
+                p.sexo,
+                d.cuit,
+                CASE 
+                    WHEN CAST(d.cuit AS VARCHAR) LIKE '3%' THEN 'Jurídica'
+                    WHEN CAST(d.cuit AS VARCHAR) LIKE '2%' THEN 'Física'
+                    ELSE 'Otra/Desconocida'
+                END AS tipo_persona,
+                CASE 
+                    WHEN CAST(d.cuit AS VARCHAR) LIKE '3%' THEN CAST(p.actividad AS VARCHAR)
+                    ELSE 'N/A' 
+                END AS actividad,
+                -- Cálculo de rango etario solo para Personas Físicas con fecha válida
+                CASE 
+                    WHEN CAST(d.cuit AS VARCHAR) NOT LIKE '2%' THEN 'N/A (Jurídica)'
+                    WHEN p.fecha_nac_contrato IS NULL THEN 'Sin dato'
+                    ELSE 
+                        CASE 
+                            -- Calcula la edad a partir de la fecha de nacimiento
+                            WHEN date_diff('year', TRY_CAST(p.fecha_nac_contrato AS DATE), CURRENT_DATE) < 25 THEN '<25'
+                            WHEN date_diff('year', TRY_CAST(p.fecha_nac_contrato AS DATE), CURRENT_DATE) BETWEEN 25 AND 34 THEN '25-34'
+                            WHEN date_diff('year', TRY_CAST(p.fecha_nac_contrato AS DATE), CURRENT_DATE) BETWEEN 35 AND 44 THEN '35-44'
+                            WHEN date_diff('year', TRY_CAST(p.fecha_nac_contrato AS DATE), CURRENT_DATE) BETWEEN 45 AND 54 THEN '45-54'
+                            WHEN date_diff('year', TRY_CAST(p.fecha_nac_contrato AS DATE), CURRENT_DATE) BETWEEN 55 AND 64 THEN '55-64'
+                            WHEN date_diff('year', TRY_CAST(p.fecha_nac_contrato AS DATE), CURRENT_DATE) >= 65 THEN '65<'
+                            ELSE 'Sin dato'
+                        END
+                END AS rango_etario,
+                d.prestamos_total_garantias
+            FROM 
+                'C:/Users/SYC/Downloads/deudores/deudores_clean.parquet' d
+            LEFT JOIN 
+                'C:/Users/SYC/Downloads/deudores/padron_arca_clean.parquet' p 
+                ON d.cuit = p.cuit
+        )
+        SELECT 
+            entidad,
+            periodo,
+            situacion,
+            provincia,
+            sexo,
+            tipo_persona,
+            actividad,
+            rango_etario,
+            SUM(prestamos_total_garantias) AS prestamos,
+            COUNT(DISTINCT cuit) AS cantidad_deudores
+        FROM base
+        GROUP BY 
+            entidad,
+            periodo,
+            situacion,
+            provincia,
+            sexo,
+            tipo_persona,
+            actividad,
+            rango_etario
+    ) TO 'data/deuda_new.parquet' (FORMAT PARQUET);
+""")
