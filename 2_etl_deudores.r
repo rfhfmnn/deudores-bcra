@@ -60,13 +60,5 @@ if (file.exists(path_old)) {
 }
 
 write_parquet(deudores_acumulado, path_old)
-message("¡Base de datos histórica actualizada con éxito!")
-
-
-
-
-
-
-
-
+message("Base de datos histórica actualizada")
 
