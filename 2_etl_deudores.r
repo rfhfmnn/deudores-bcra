@@ -48,17 +48,17 @@ deudores_new <- read_parquet(path_new) |>
 
 
 if (file.exists(path_old)) {
-  message("Cargando archivo histórico existente...")
+  message("cargando historico existente")
   deudores_old <- read_parquet(path_old)
   fechas_nuevas <- unique(deudores_new$fecha)
   deudores_old <- deudores_old |> 
     filter(!(fecha %in% fechas_nuevas))
   deudores_acumulado <- bind_rows(deudores_old, deudores_new)
 } else {
-  message("No se encontró histórico. Creando primer registro de la base...")
+  message("no hay histórica, creando base de cero")
   deudores_acumulado <- deudores_new
 }
 
 write_parquet(deudores_acumulado, path_old)
-message("Base de datos histórica actualizada")
+message("histórica actualizada")
 
