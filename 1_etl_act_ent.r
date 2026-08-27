@@ -32,6 +32,6 @@ entidades <- read_fwf(
 entidades$entidad <- trimws(entidades$entidad)
 entidades$nombre_entidad <- trimws(entidades$nombre_entidad)
 
-write_parquet(actividades, "deudores-bcra/data/actividades.parquet")
-write_parquet(entidades, "deudores-bcra/data/entidades.parquet")
+write_parquet(actividades, "actividades.parquet")
+write_parquet(entidades, "entidades.parquet")
 
