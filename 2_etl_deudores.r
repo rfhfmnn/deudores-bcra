@@ -9,10 +9,9 @@ actividades <- read_parquet("data/actividades.parquet")
 entidades   <- read_parquet("data/entidades.parquet")
 
 deudores_new <- read_parquet(path_new) |> 
-  mutate(fecha = ym(periodo)) |> 
-  select(-periodo) |> 
+  mutate(periodo = ym(periodo)) |> 
   left_join(entidades, by = "entidad") |> 
-  select(fecha, nombre_entidad, situacion, provincia, everything(), -entidad) |> 
+  select(periodo, nombre_entidad, situacion, provincia, everything()) |> 
   mutate(provincia = case_when(
     provincia == 0  ~ "CABA",
     provincia == 1  ~ "Buenos Aires",
@@ -50,10 +49,12 @@ deudores_new <- read_parquet(path_new) |>
 if (file.exists(path_old)) {
   message("cargando historico existente")
   deudores_old <- read_parquet(path_old)
-  fechas_nuevas <- unique(deudores_new$fecha)
-  deudores_old <- deudores_old |> 
-    filter(!(fecha %in% fechas_nuevas))
-  deudores_acumulado <- bind_rows(deudores_old, deudores_new)
+  
+  deudores_old_filtrado <- deudores_old |> 
+    anti_join(deudores_new, by = c("entidad", "periodo"))
+  
+  deudores_acumulado <- bind_rows(deudores_old_filtrado, deudores_new)
+  
 } else {
   message("no hay histórica, creando base de cero")
   deudores_acumulado <- deudores_new
@@ -61,4 +62,3 @@ if (file.exists(path_old)) {
 
 write_parquet(deudores_acumulado, path_old)
 message("histórica actualizada")
-
