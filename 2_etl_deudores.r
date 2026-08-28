@@ -62,3 +62,4 @@ if (file.exists(path_old)) {
 
 write_parquet(deudores_acumulado, path_old)
 message("histórica actualizada")
+
