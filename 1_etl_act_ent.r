@@ -2,7 +2,7 @@ library(tidyverse)
 library(data.table)
 library(arrow)
 
-dir<-"C:/Users/rafah/Documents/Deudores BCRA"
+dir<-"C:/Users/SYC/Downloads/deudores"
 setwd(dir)
 
 actividades <- read_fwf(
@@ -34,4 +34,5 @@ entidades$nombre_entidad <- trimws(entidades$nombre_entidad)
 
 write_parquet(actividades, "actividades.parquet")
 write_parquet(entidades, "entidades.parquet")
+
 

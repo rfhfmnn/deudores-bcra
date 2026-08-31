@@ -1,10 +1,11 @@
 library(tidyverse)
 library(arrow)
 library(lubridate)
-
+dir<-"C:/Users/SYC/Downloads/deudores/deudores-bcra"
 path_new <- "data/deuda_new.parquet"           
 path_old <- "data/deuda_old.parquet"    
 
+setwd(dir)
 actividades <- read_parquet("data/actividades.parquet")
 entidades   <- read_parquet("data/entidades.parquet")
 
@@ -62,4 +63,3 @@ if (file.exists(path_old)) {
 
 write_parquet(deudores_acumulado, path_old)
 message("histórica actualizada")
-
