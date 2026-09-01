@@ -1,11 +1,14 @@
 {
-  "name": "Turbo Contraste",
+  "name": "Categorias Optimizadas",
   "dataColors": [
-    "#30123B",
-    "#4675ED",
-    "#19E3B1",
-    "#94FA3A",
-    "#FCA511",
-    "#D21E05"
+    "#1F77B4", 
+    "#FF7F0E", 
+    "#2CA02C", 
+    "#D62728", 
+    "#9467BD", 
+    "#8C564B", 
+    "#E377C2", 
+    "#F0E442",
+    "#00CED1"
   ]
 }
