@@ -43,8 +43,7 @@ deudores_new <- read_parquet(path_new) |>
   mutate(situacion_mora = ifelse(situacion %in% c(1, 2), "Normal/Bajo riesgo", "En mora")) |> 
   replace_na(list(sexo = "Empresa")) |> 
   left_join(actividades, by = "actividad") |> 
-  replace_na(list(descripcion = "Sin actividad")) |> 
-  select(-actividad)
+  replace_na(list(descripcion = "Sin actividad"))
 
 
 if (file.exists(path_old)) {
