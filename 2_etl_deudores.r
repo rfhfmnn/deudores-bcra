@@ -1,11 +1,11 @@
 library(tidyverse)
 library(arrow)
 library(lubridate)
-dir<-"C:/Users/SYC/Downloads/deudores/deudores-bcra"
+dir<-"C:/Users/rafah/Dcouments/Deudores BCRA/deudores-bcra"
 path_new <- "data/deuda_new.parquet"           
 path_old <- "data/deuda_old.parquet"    
 
-setwd(dir)
+#setwd(dir)
 actividades <- read_parquet("data/actividades.parquet")
 entidades   <- read_parquet("data/entidades.parquet")
 
